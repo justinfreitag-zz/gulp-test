@@ -1,0 +1,41 @@
+{
+  "name": "gulp-test",
+  "version": "0.0.1",
+  "description": "All-in-one lint, coverage & complexity testing",
+  "dependencies": {
+    "gulp-help": "0.1.8",
+    "gulp-istanbul": "0.2.0",
+    "gulp-istanbul-enforcer": "1.0.3",
+    "gulp-jshint": "1.7.1",
+    "gulp-load-plugins": "0.5.3",
+    "gulp-mocha": "0.5.1",
+    "gulp-nice-package": "0.0.1",
+    "gulp-open": "0.2.8",
+    "gulp-plato": "0.3.0",
+    "gulp-util": "2.2.20",
+    "jshint-stylish": "0.4.0",
+    "map-stream": "0.1.0",
+    "merge": "1.1.3"
+  },
+  "devDependencies": {
+    "gulp": "3.8.6"
+  },
+  "scripts": {
+    "test": "gulp test"
+  },
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/justinfreitag/gulp-test.git"
+  },
+  "keywords": [
+    "gulp"
+  ],
+  "author": {
+    "name": "Justin Fretiag",
+    "email": "justin.freitag@gmail.com"
+  },
+  "license": "MIT"
+}
