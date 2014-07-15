@@ -6,12 +6,7 @@ var istanbulEnforcer = require('gulp-istanbul-enforcer');
 var jshint = require('gulp-jshint');
 var merge = require('merge');
 var mocha = require('gulp-mocha');
-var plato = require('gulp-plato');
-var util = require('gulp-util');
 var stylish = require('jshint-stylish');
-//var fs = require('fs');
-//var path = require('path');
-//var spawn = require('child_process').spawn;
 
 var DEFAULT_OPTIONS = {
   paths: {
@@ -49,26 +44,18 @@ var DEFAULT_OPTIONS = {
   }
 };
 
-function handleError(error) {
-  util.log(error.message);
-  util.log(error.stack);
-  process.exit(1);
-}
-
 module.exports = function (gulp, options) {
   gulp.options = merge(DEFAULT_OPTIONS, options);
 
   help(gulp);
 
-  gulp.task('default', ['lint', 'coverage']);
-
-  gulp.task('test', function () {
+  gulp.task('test', 'Perform tests only.', function () {
     return gulp
       .src(gulp.options.paths.test)
       .pipe(mocha(gulp.options.test));
   });
 
-  gulp.task('lint', function () {
+  gulp.task('lint', 'Perform lint tests.', function () {
     return gulp
       .src(gulp.options.paths.lint)
       .pipe(jshint())
@@ -80,7 +67,7 @@ module.exports = function (gulp, options) {
     rootDirectory: ''
   }, gulp.options.coverage);
 
-  gulp.task('coverage', function (callback) {
+  gulp.task('coverage', 'Perform coverage tests.', function (callback) {
     gulp.src(gulp.options.paths.coverage.src)
       .pipe(istanbul())
       .on('finish', function () {
@@ -92,9 +79,9 @@ module.exports = function (gulp, options) {
       });
   });
 
-  gulp.task('complexity', function () {
-    return gulp.src(gulp.options.paths.coverage.src)
-      .pipe(plato(gulp.options.paths.complexity));
+  gulp.task('complexity', 'Perform complexity tests.', function () {
+    //return gulp.src(gulp.options.paths.coverage.src)
+    //  .pipe(plato(gulp.options.paths.complexity));
   });
 
 };

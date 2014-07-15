@@ -1,0 +1,8 @@
+.npmignore
+.gitignore
+.travis.yml
+README.md
+*.log
+target/
+node_modules/
+
