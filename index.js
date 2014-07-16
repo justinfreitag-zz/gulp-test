@@ -9,6 +9,7 @@ var mocha = require('gulp-mocha');
 var exit = require('gulp-exit');
 var rimraf = require('gulp-rimraf');
 var stylish = require('jshint-stylish');
+var through = require('through2');
 
 var DEFAULT_OPTIONS = {
   paths: {
@@ -41,32 +42,52 @@ var DEFAULT_OPTIONS = {
     }
   },
   test: {
+    checkLeaks: true,
     reporter: 'spec',
-    timeout: 6000
+    timeout: 2000
   }
 };
+
+function end(done) {
+  return through.obj(
+    function (data, encoding, callback) {
+      callback();
+    },
+    function (callback) {
+      callback();
+      done();
+    }
+  );
+}
 
 module.exports = function (gulp, options) {
   gulp.options = merge(DEFAULT_OPTIONS, options);
 
   help(gulp);
 
-  gulp.task('clean', 'Clean target folder', function () {
+  gulp.task('clean', 'Clean target folder.', function () {
     return gulp
       .src('target', {read: false})
       .pipe(rimraf({force: true}));
   });
 
-  gulp.task('test', 'Perform tests only.', function () {
+  gulp.task('copy-lint-files', 'Copy lint files.', function () {
     return gulp
-      .src(gulp.options.paths.test)
+      .src(__dirname + '/**/*.jshintrc')
+      .pipe(gulp.dest('tmp'));
+  });
+
+  gulp.task('test', 'Perform tests only.', function (done) {
+    gulp
+      .src(gulp.options.paths.test, {read: false})
       .pipe(mocha(gulp.options.test))
+      .pipe(end(done))
       .pipe(exit());
   });
 
   gulp.task('lint', 'Perform lint tests.', function () {
     return gulp
-      .src(gulp.options.paths.lint)
+      .src(gulp.options.paths.lint, {read: false})
       .pipe(jshint())
       .pipe(jshint.reporter(stylish));
   });
@@ -76,7 +97,7 @@ module.exports = function (gulp, options) {
     rootDirectory: ''
   }, gulp.options.coverage);
 
-  gulp.task('coverage', 'Perform coverage tests.', function (callback) {
+  gulp.task('coverage', 'Perform coverage tests.', function (done) {
     gulp
       .src(gulp.options.paths.coverage.src)
       .pipe(istanbul())
@@ -93,7 +114,7 @@ module.exports = function (gulp, options) {
             coverageError = error;
           })
           .on('end', function () {
-            callback(coverageError);
+            done(coverageError);
           })
           .pipe(exit());
       });
