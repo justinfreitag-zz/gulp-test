@@ -1,13 +1,15 @@
 {
   "name": "gulp-test",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "All-in-one lint, coverage & complexity tester",
   "dependencies": {
+    "gulp-exit": "0.0.2",
     "gulp-help": "0.1.8",
     "gulp-istanbul": "0.2.0",
     "gulp-istanbul-enforcer": "1.0.3",
     "gulp-jshint": "1.7.1",
     "gulp-mocha": "0.5.1",
+    "gulp-rimraf": "0.1.0",
     "jshint-stylish": "0.4.0",
     "merge": "1.1.3"
   },
@@ -19,7 +21,9 @@
     "url": "git@github.com:justinfreitag/gulp-test.git"
   },
   "homepage": "https://github.com:justinfreitag/gulp-test",
-  "bugs": "https://github.com:justinfreitag/gulp-test/issues",
+  "bugs": {
+    "url": "https://github.com:justinfreitag/gulp-test/issues"
+  },
   "keywords": [
     "gulp",
     "lint",
@@ -32,4 +36,3 @@
   },
   "license": "MIT"
 }
-

@@ -6,6 +6,8 @@ var istanbulEnforcer = require('gulp-istanbul-enforcer');
 var jshint = require('gulp-jshint');
 var merge = require('merge');
 var mocha = require('gulp-mocha');
+var exit = require('gulp-exit');
+var rimraf = require('gulp-rimraf');
 var stylish = require('jshint-stylish');
 
 var DEFAULT_OPTIONS = {
@@ -21,8 +23,7 @@ var DEFAULT_OPTIONS = {
     lint: [
       '*.js',
       'lib/**/*.js',
-      'test/**.js',
-      '!node_modules'
+      'test/**.js'
     ],
     test: 'test/**/*.js'
   },
@@ -40,7 +41,8 @@ var DEFAULT_OPTIONS = {
     }
   },
   test: {
-    reporter: 'spec'
+    reporter: 'spec',
+    timeout: 6000
   }
 };
 
@@ -49,10 +51,17 @@ module.exports = function (gulp, options) {
 
   help(gulp);
 
+  gulp.task('clean', 'Clean target folder', function () {
+    return gulp
+      .src('target', {read: false})
+      .pipe(rimraf({force: true}));
+  });
+
   gulp.task('test', 'Perform tests only.', function () {
     return gulp
       .src(gulp.options.paths.test)
-      .pipe(mocha(gulp.options.test));
+      .pipe(mocha(gulp.options.test))
+      .pipe(exit());
   });
 
   gulp.task('lint', 'Perform lint tests.', function () {
@@ -68,14 +77,25 @@ module.exports = function (gulp, options) {
   }, gulp.options.coverage);
 
   gulp.task('coverage', 'Perform coverage tests.', function (callback) {
-    gulp.src(gulp.options.paths.coverage.src)
+    gulp
+      .src(gulp.options.paths.coverage.src)
       .pipe(istanbul())
       .on('finish', function () {
+        var coverageError;
         gulp.src(gulp.options.paths.test)
           .pipe(mocha(gulp.options.test))
-          .pipe(istanbul.writeReports(gulp.options.paths.coverage.dest))
+          .pipe(istanbul.writeReports({
+            dir: gulp.options.paths.coverage.dest,
+            reporters: ['json', 'lcov']
+          }))
           .pipe(istanbulEnforcer(gulp.options.coverage))
-          .on('end', callback);
+          .on('error', function (error) {
+            coverageError = error;
+          })
+          .on('end', function () {
+            callback(coverageError);
+          })
+          .pipe(exit());
       });
   });
 
